@@ -71,18 +71,12 @@ div.data {
 
 .final-result-success {
   padding: 15px;
-  background-color: #0f5132;
-  color: #75b798;
-}
-
-.final-result-alert {
-  padding: 15px;
-  background-color: #664d03;
-  color: #ffda6a;
+  background-color: #495057;
+  color: #ffffff;
 }
 
 .final-result-danger {
   padding: 15px;
   background-color: #842029;
-  color: #ea868f;
+  color: #ffffff;
 }

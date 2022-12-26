@@ -1,47 +1,66 @@
-function myScope() {
-    const finalResultDiv = document.querySelector('.final-result')
-    const form = document.getElementById('formulario')
-    const peso = document.getElementById('peso')
-    const altura = document.getElementById('altura')
-    let imc = 0
-    let pesoForm = 0
-    let alturaForm = 0
+const form = document.getElementById('formulario')
 
-    const resultClass = ['final-result-success', 'final-result-alert', 'final-result-danger']
+form.addEventListener('submit', function eventoForm (e) {
+    e.preventDefault()
+    const inputPeso = Number(document.getElementById('peso').value)
+    const inputAltura = Number(document.getElementById('altura').value)
 
-    function eventoForm(evento) {
-        evento.preventDefault()
+    const imc = getImc(inputPeso, inputAltura)
+    const nivel = getNivel(imc)
+    const message = `Seu IMC é ${imc} (${nivel})`
 
-        pesoForm = Number(peso.value)
-        alturaForm = Number(altura.value)
-
-        imc = pesoForm / (alturaForm * alturaForm)
-
-        if (imc) {
-
-            imc = imc.toFixed(2)
-
-            if (imc < 18.5) {
-                finalResultDiv.innerHTML = `<p class='${resultClass[1]}'>O IMC é: ${imc} (abaixo do peso)</p>`
-            } else if (imc >= 18.5 && imc <= 24.9) {
-                finalResultDiv.innerHTML = `<p class='${resultClass[0]}'>O IMC é: ${imc} (peso normal)</p>`
-            } else if (imc >= 25 && imc <= 29.9) {
-                finalResultDiv.innerHTML = `<p class='${resultClass[1]}'>O IMC é: ${imc} (sobrepeso)</p>`
-            } else if (imc >= 30 && imc <= 34.9) {
-                finalResultDiv.innerHTML = `<p class='${resultClass[2]}'>O IMC é: ${imc} (obesidade grau 1)</p>`
-            } else if (imc >= 35 && imc <= 39.9) {
-                finalResultDiv.innerHTML = `<p class='${resultClass[2]}'>O IMC é: ${imc} (obesidade grau 2)</p>`
-            } else if (imc >= 40) {
-                if (imc === Infinity) {
-                    finalResultDiv.innerHTML = `<p class='${resultClass[2]}'>Insira um valor real para o cálculo!</p>`
-                } else {
-                finalResultDiv.innerHTML = `<p class='${resultClass[2]}'>O IMC é: ${imc} (obesidade grau 3)</p>`
-                }
-            }
-        } else {
-            finalResultDiv.innerHTML = `<p class='${resultClass[2]}'>Insira um valor real para o cálculo!</p>`
-        }
+    if (!inputPeso) {
+        setResultado('Peso inválido', false)
+        return
     }
-    form.addEventListener('submit', eventoForm)
+    if (!inputAltura) {
+        setResultado('Altura inválida', false)
+        return
+    }
+    setResultado(message, true)
+})
+
+function setResultado (msg, isValid) {
+    const finalResultDiv = document.querySelector('.final-result')
+    finalResultDiv.innerHTML = ''
+    const nivelClass = ['final-result-success', 'final-result-danger']
+    const p = setP()
+    if(isValid) {
+        p.classList.add(nivelClass[0])
+    } else {
+        p.classList.add(nivelClass[1])
+    }
+    p.innerHTML = msg
+    finalResultDiv.appendChild(p)
 }
-myScope()
+
+function setP () {
+    const p = document.createElement('p')
+    return p
+}
+
+function getImc (peso, altura) {
+    const imc = peso / (altura ** 2)
+    return imc
+}
+
+function getNivel (imc) {
+    const nivel = ['Abaixo do peso', 'Peso normal', 'Sobrepeso', 'Obesidade grau 1', 'Obesidade grau 2', 'Obesidade grau 3']
+
+    let nivelMsg = ''
+
+    if (imc < 18.5) {
+        nivelMsg = nivel[0]
+    } else if (imc >= 18.5 && imc < 25) {
+        nivelMsg = nivel[1]
+    } else if (imc >= 25 && imc < 30) {
+        nivelMsg = nivel[2]
+    } else if (imc >= 30 && imc <= 35) {
+        nivelMsg = nivel[3]
+    } else if (imc >= 35 && imc <= 40) {
+        nivelMsg = nivel[4]
+    } else {
+        nivelMsg = nivel[5]
+    }
+    return nivelMsg
+}
